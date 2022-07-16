@@ -72,6 +72,14 @@ void descKeypoints(
               << "\n";
 }
 
+void detKeypointsHarris(
+    std::vector<cv::KeyPoint> &keypoints,
+    cv::Mat &img,
+    bool bVis = false)
+{
+    // TODO: Implement traditional Harris corner detector.
+}
+
 void detKeypointsShiTomasi(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, bool bVis)
 {
     // Compute detector parameters based on image size

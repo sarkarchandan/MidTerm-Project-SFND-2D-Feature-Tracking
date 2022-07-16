@@ -18,6 +18,14 @@
 
 #include "dataStructures.h"
 
+/**
+ * @brief Detect key points in image using the traditional
+ * Harris corner detector.
+ *
+ * @param keypoints Key points to be detected as output.
+ * @param img Source image, where key points are to be detected.
+ * @param bVis Boolean flag for visualization of key points.
+ */
 void detKeypointsHarris(
     std::vector<cv::KeyPoint> &keypoints,
     cv::Mat &img,
