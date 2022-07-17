@@ -47,7 +47,7 @@ void detKeypointsShiTomasi(
 /**
  * @brief Detect key points in the image using one of the
  * contemporary feature detection algorithms e.g., FAST,
- * AKAZE, BRISK, BRIEF etc.. The detector type would be
+ * AKAZE, BRISK, ORB, SIFT etc.. The detector type would be
  * determined by the dedicated parameter `detectorType`.
  *
  * @param keypoints Key points to be detected as output.

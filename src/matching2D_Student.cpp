@@ -220,5 +220,70 @@ void detKeypointsModern(
     std::string detectorType,
     bool bVis)
 {
-    // TODO: FAST, AKAZE, BRISK, BRIEF
+    double t = static_cast<double>(cv::getTickCount());
+    if (detectorType.compare("FAST") == 0)
+    {
+        cv::FastFeatureDetector::DetectorType type = cv::FastFeatureDetector::TYPE_9_16;
+        cv::Ptr<cv::FastFeatureDetector> detector = cv::FastFeatureDetector::create(
+            /*threshold*/ 30,
+            /*nonMaximalSuppression*/ true,
+            /*type*/ type);
+        detector->detect(/*images*/ img, /*keypoints*/ keypoints);
+        t = (static_cast<double>(cv::getTickCount()) - t) / cv::getTickFrequency();
+        std::cout << "FAST detection with n = "
+                  << keypoints.size()
+                  << " keypoints in " << 1000 * t << " ms"
+                  << "\n";
+        return;
+    }
+    else if (detectorType.compare("AKAZE") == 0)
+    {
+        cv::Ptr<cv::FeatureDetector> detector = cv::AKAZE::create();
+        detector->detect(/*images*/ img, /*keypoints*/ keypoints);
+        t = (static_cast<double>(cv::getTickCount()) - t) / cv::getTickFrequency();
+        std::cout << "AKAZE detection with n = "
+                  << keypoints.size()
+                  << " keypoints in " << 1000 * t << " ms"
+                  << "\n";
+        return;
+    }
+    else if (detectorType.compare("BRISK") == 0)
+    {
+        cv::Ptr<cv::FeatureDetector> detector = cv::BRISK::create();
+        detector->detect(/*images*/ img, /*keypoints*/ keypoints);
+        t = (static_cast<double>(cv::getTickCount()) - t) / cv::getTickFrequency();
+        std::cout << "BRISK detection with n = "
+                  << keypoints.size()
+                  << " keypoints in " << 1000 * t << " ms"
+                  << "\n";
+        return;
+    }
+    else if (detectorType.compare("ORB") == 0)
+    {
+        cv::Ptr<cv::FeatureDetector> detector = cv::ORB::create();
+        detector->detect(/*images*/ img, /*keypoints*/ keypoints);
+        t = (static_cast<double>(cv::getTickCount()) - t) / cv::getTickFrequency();
+        std::cout << "ORB detection with n = "
+                  << keypoints.size()
+                  << " keypoints in " << 1000 * t << " ms"
+                  << "\n";
+        return;
+    }
+    else if (detectorType.compare("SIFT") == 0)
+    {
+        cv::Ptr<cv::FeatureDetector> detector = cv::SIFT::create();
+        detector->detect(/*images*/ img, /*keypoints*/ keypoints);
+        t = (static_cast<double>(cv::getTickCount()) - t) / cv::getTickFrequency();
+        std::cout << "SIFT detection with n = "
+                  << keypoints.size()
+                  << " keypoints in " << 1000 * t << " ms"
+                  << "\n";
+        return;
+    }
+    else
+    {
+        std::stringstream ss;
+        ss << detectorType << " feature detector not implemented";
+        throw std::runtime_error(ss.str());
+    }
 }
