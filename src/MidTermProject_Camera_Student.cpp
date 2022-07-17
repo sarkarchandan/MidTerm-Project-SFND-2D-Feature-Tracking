@@ -70,7 +70,7 @@ int main(int argc, const char *argv[])
 
         // extract 2D keypoints from current image
         std::vector<cv::KeyPoint> keypoints; // create empty feature list for current image
-        std::string detectorType = "FAST";
+        std::string detectorType = "SHITOMASI";
 
         //// STUDENT ASSIGNMENT
         //// TASK MP.2 -> add the following keypoint detectors in file matching2D.cpp and enable string-based selection based on detectorType
@@ -153,7 +153,7 @@ int main(int argc, const char *argv[])
         //// -> BRIEF, ORB, FREAK, AKAZE, SIFT
 
         cv::Mat descriptors;
-        std::string descriptorType = "ORB"; // BRIEF, ORB, FREAK, AKAZE, SIFT
+        std::string descriptorType = "SIFT"; // BRIEF, ORB, FREAK, AKAZE, SIFT
         descKeypoints(
             /*keypoints*/ dataBuffer[1].keyPoints,
             /*img*/ dataBuffer[1].cameraImg,
