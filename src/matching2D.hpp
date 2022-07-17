@@ -43,11 +43,35 @@ void detKeypointsShiTomasi(
     std::vector<cv::KeyPoint> &keypoints,
     cv::Mat &img,
     bool bVis = false);
+
+/**
+ * @brief Detect key points in the image using one of the
+ * contemporary feature detection algorithms e.g., FAST,
+ * AKAZE, BRISK, BRIEF etc.. The detector type would be
+ * determined by the dedicated parameter `detectorType`.
+ *
+ * @param keypoints Key points to be detected as output.
+ * @param img Source image, where key points are to be detected.
+ * @param detectorType Type of the detector algorithm.
+ * @param bVis Boolean flag for visualization of key points.
+ */
 void detKeypointsModern(
     std::vector<cv::KeyPoint> &keypoints,
     cv::Mat &img,
     std::string detectorType,
     bool bVis = false);
+
+/**
+ * @brief Identify key points in the image using one of the
+ * contemporary feature descriptors e.g., BRISK, ORB, SIFT
+ * etc.. The type of the feature descriptors would be determined
+ * by the parameter `descriptorType`.
+ *
+ * @param keypoints Key points to be identified as output.
+ * @param img Source image, where key points are to be identified.
+ * @param descriptors Key point descriptors.
+ * @param descriptorType Type of the key point descriptor algorithm.
+ */
 void descKeypoints(
     std::vector<cv::KeyPoint> &keypoints,
     cv::Mat &img,

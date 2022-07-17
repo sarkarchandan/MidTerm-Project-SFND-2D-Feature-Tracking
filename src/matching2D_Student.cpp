@@ -40,7 +40,6 @@ void matchDescriptors(
     }
 }
 
-// Use one of several types of state-of-art descriptors to uniquely identify keypoints
 void descKeypoints(
     std::vector<cv::KeyPoint> &keypoints,
     cv::Mat &img,
@@ -213,4 +212,13 @@ void detKeypointsShiTomasi(
         cv::imshow(windowName, visImage);
         cv::waitKey(0);
     }
+}
+
+void detKeypointsModern(
+    std::vector<cv::KeyPoint> &keypoints,
+    cv::Mat &img,
+    std::string detectorType,
+    bool bVis)
+{
+    // TODO: FAST, AKAZE, BRISK, BRIEF
 }
