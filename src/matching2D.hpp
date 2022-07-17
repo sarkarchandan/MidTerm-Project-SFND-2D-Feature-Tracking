@@ -63,13 +63,14 @@ void detKeypointsModern(
 
 /**
  * @brief Identify key points in the image using one of the
- * contemporary feature descriptors e.g., BRISK, ORB, SIFT
- * etc.. The type of the feature descriptors would be determined
- * by the parameter `descriptorType`.
+ * contemporary feature descriptors e.g., BRIEF, ORB, FREAK,
+ * AKAZE, SIFT etc.. The type of the feature descriptors would
+ * be determined by the parameter `descriptorType`.
  *
- * @param keypoints Key points to be identified as output.
+ * @param keypoints Key points to be considered for identifying the
+ * distinctive neighborhood feature vectors.
  * @param img Source image, where key points are to be identified.
- * @param descriptors Key point descriptors.
+ * @param descriptors Key point descriptors as output.
  * @param descriptorType Type of the key point descriptor algorithm.
  */
 void descKeypoints(

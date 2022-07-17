@@ -4,76 +4,6 @@
 
 #include "matching2D.hpp"
 
-void matchDescriptors(
-    std::vector<cv::KeyPoint> &kPtsSource,
-    std::vector<cv::KeyPoint> &kPtsRef,
-    cv::Mat &descSource, cv::Mat &descRef,
-    std::vector<cv::DMatch> &matches,
-    std::string descriptorType,
-    std::string matcherType,
-    std::string selectorType)
-{
-    // configure matcher
-    bool crossCheck = false;
-    cv::Ptr<cv::DescriptorMatcher> matcher;
-
-    if (matcherType.compare("MAT_BF") == 0)
-    {
-        int normType = cv::NORM_HAMMING;
-        matcher = cv::BFMatcher::create(normType, crossCheck);
-    }
-    else if (matcherType.compare("MAT_FLANN") == 0)
-    {
-        // ...
-    }
-
-    // perform matching task
-    if (selectorType.compare("SEL_NN") == 0)
-    { // nearest neighbor (best match)
-
-        matcher->match(descSource, descRef, matches); // Finds the best match for each descriptor in desc1
-    }
-    else if (selectorType.compare("SEL_KNN") == 0)
-    { // k nearest neighbors (k=2)
-
-        // ...
-    }
-}
-
-void descKeypoints(
-    std::vector<cv::KeyPoint> &keypoints,
-    cv::Mat &img,
-    cv::Mat &descriptors,
-    std::string descriptorType)
-{
-    // select appropriate descriptor
-    cv::Ptr<cv::DescriptorExtractor> extractor;
-    if (descriptorType.compare("BRISK") == 0)
-    {
-
-        int threshold = 30;        // FAST/AGAST detection threshold score.
-        int octaves = 3;           // detection octaves (use 0 to do single scale)
-        float patternScale = 1.0f; // apply this scale to the pattern used for sampling the neighbourhood of a keypoint.
-
-        extractor = cv::BRISK::create(threshold, octaves, patternScale);
-    }
-    else
-    {
-
-        //...
-    }
-
-    // perform feature description
-    double t = (double)cv::getTickCount();
-    extractor->compute(img, keypoints, descriptors);
-    t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
-    std::cout << descriptorType
-              << " descriptor extraction in "
-              << 1000 * t / 1.0
-              << " ms"
-              << "\n";
-}
-
 void detKeypointsHarris(
     std::vector<cv::KeyPoint> &keypoints,
     cv::Mat &img,
@@ -285,5 +215,126 @@ void detKeypointsModern(
         std::stringstream ss;
         ss << detectorType << " feature detector not implemented";
         throw std::runtime_error(ss.str());
+    }
+}
+
+void descKeypoints(
+    std::vector<cv::KeyPoint> &keypoints,
+    cv::Mat &img,
+    cv::Mat &descriptors,
+    std::string descriptorType)
+{
+    // BRIEF, ORB, FREAK, AKAZE, SIFT
+    // select appropriate descriptor
+    cv::Ptr<cv::DescriptorExtractor> extractor;
+    if (descriptorType.compare("BRISK") == 0)
+    {
+        int threshold = 30;        /*FAST/AGAST detection threshold score*/
+        int octaves = 3;           /*Detection octaves (use 0 to do single scale)*/
+        float patternScale = 1.0f; /*Apply this scale to the pattern used for sampling the neighborhood of a key point.*/
+        extractor = cv::BRISK::create(threshold, octaves, patternScale);
+    }
+    else if (descriptorType.compare("BRIEF") == 0)
+    {
+        cv::xfeatures2d::BriefDescriptorExtractor::create();
+    }
+    else if (descriptorType.compare("ORB") == 0)
+    {
+        extractor = cv::ORB::create();
+    }
+    else if (descriptorType.compare("FREAK") == 0)
+    {
+        cv::xfeatures2d::FREAK::create();
+    }
+    else if (descriptorType.compare("AKAZE") == 0)
+    {
+        extractor = cv::AKAZE::create();
+    }
+    else if (descriptorType.compare("SIFT") == 0)
+    {
+        extractor = cv::SiftDescriptorExtractor::create();
+    }
+    else
+    {
+        std::stringstream ss;
+        ss << descriptorType << " key point descriptor not implemented";
+        throw std::runtime_error(ss.str());
+    }
+    // perform feature description
+    double t = static_cast<double>(cv::getTickCount());
+    extractor->compute(
+        /*image*/ img,
+        /*keypoints*/ keypoints,
+        /*descriptors*/ descriptors);
+    t = (static_cast<double>(cv::getTickCount()) - t) / cv::getTickFrequency();
+    std::cout << descriptorType
+              << " descriptor extraction in "
+              << 1000 * t
+              << " ms"
+              << "\n";
+}
+
+void matchDescriptors(
+    std::vector<cv::KeyPoint> &kPtsSource,
+    std::vector<cv::KeyPoint> &kPtsRef,
+    cv::Mat &descSource, cv::Mat &descRef,
+    std::vector<cv::DMatch> &matches,
+    std::string descriptorType,
+    std::string matcherType,
+    std::string selectorType)
+{
+    // Configure matcher
+    bool crossCheck = false;
+    cv::Ptr<cv::DescriptorMatcher> matcher;
+
+    if (matcherType.compare("MAT_BF") == 0)
+    {
+        int normType = descriptorType.compare("DES_BINARY") == 0
+                           ? cv::NORM_HAMMING
+                           : cv::NORM_L2;
+        matcher = cv::BFMatcher::create(/*normType*/ normType, /*crossCheck*/ crossCheck);
+    }
+    else if (matcherType.compare("MAT_FLANN") == 0)
+    {
+        // Due to a potential bug in OpenCV FLANN based matching implementation we
+        // safeguard by converting the descriptors to floating point
+        if (descSource.type() != CV_32F)
+        {
+            descSource.convertTo(/*m*/ descSource, /*rtype*/ CV_32F);
+            descRef.convertTo(/*m*/ descRef, /*rtype*/ CV_32F);
+        }
+        matcher = cv::DescriptorMatcher::create(/*matcherType*/ cv::DescriptorMatcher::FLANNBASED);
+    }
+    // Perform matching task
+    if (selectorType.compare("SEL_NN") == 0)
+    {
+        // Nearest neighbor (best match).
+        // Finds the best match for each descriptor in desc1
+        matcher->match(
+            /*queryDescriptor*/ descSource,
+            /*trainDescriptor*/ descRef,
+            /*matches*/ matches);
+    }
+    else if (selectorType.compare("SEL_KNN") == 0)
+    {
+        std::vector<std::vector<cv::DMatch>> knnMatches;
+        // k nearest neighbors (k=2)
+        matcher->knnMatch(
+            /*queryDescriptors*/ descSource,
+            /*trainDescriptors*/ descRef,
+            /*matches*/ knnMatches,
+            /*k*/ 2);
+        // Perform Lowe's distance ratio test
+        const float distanceRatioThreshold = 0.8f;
+        for (std::vector<cv::DMatch> const &vec : knnMatches)
+        {
+            // If the first descriptor's matching distance is less than the
+            // second one by the distance ratio threshold, we consider the first
+            // match.
+            if (vec[0].distance < distanceRatioThreshold * vec[1].distance)
+            {
+                matches.push_back(vec[0]);
+            }
+        }
     }
 }
