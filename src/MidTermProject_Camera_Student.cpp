@@ -33,9 +33,9 @@ int main(int argc, const char *argv[])
     int imgFillWidth = 4;                                            /*No. of digits which make up the file index (e.g. img-0001.png)*/
 
     // Data buffer properties
-    int dataBufferSize = 2;            /*No. of images which are held in memory (ring buffer) at the same time*/
-    std::vector<DataFrame> dataBuffer; /*List of data frames which are held in memory at the same time*/
-    bool bVis = false;                 /*Boolean flag for visualizing result*/
+    const size_t dataBufferSize = 2;                  /*No. of images which are held in memory (ring buffer) at the same time*/
+    RingBuffer<DataFrame, dataBufferSize> dataBuffer; /*List of data frames which are held in memory at the same time*/
+    bool bVis = false;                                /*Boolean flag for visualizing result*/
 
     /* MAIN LOOP OVER ALL IMAGES */
 
@@ -60,7 +60,7 @@ int main(int argc, const char *argv[])
         // TODO: Implement RingBuffer
         DataFrame frame;
         frame.cameraImg = imgGray;
-        dataBuffer.push_back(frame);
+        dataBuffer.push(frame);
 
         //// EOF STUDENT ASSIGNMENT
         std::cout << "#1 : LOAD IMAGE INTO BUFFER done"
@@ -142,7 +142,7 @@ int main(int argc, const char *argv[])
 
         // Push key points of interest and descriptor for current frame to end of data
         // buffer
-        (dataBuffer.end() - 1)->keyPoints = keyPointsOI;
+        dataBuffer[1].keyPoints = keyPointsOI;
         std::cout << "#2 : DETECT KEYPOINTS done"
                   << "\n";
 
@@ -155,14 +155,14 @@ int main(int argc, const char *argv[])
         cv::Mat descriptors;
         std::string descriptorType = "ORB"; // BRIEF, ORB, FREAK, AKAZE, SIFT
         descKeypoints(
-            /*keypoints*/ (dataBuffer.end() - 1)->keyPoints,
-            /*img*/ (dataBuffer.end() - 1)->cameraImg,
+            /*keypoints*/ dataBuffer[1].keyPoints,
+            /*img*/ dataBuffer[1].cameraImg,
             /*descriptors*/ descriptors,
             /*descriptorType*/ descriptorType);
         //// EOF STUDENT ASSIGNMENT
 
         // push descriptors for current frame to end of data buffer
-        (dataBuffer.end() - 1)->descriptors = descriptors;
+        dataBuffer[1].descriptors = descriptors;
 
         std::cout << "#3 : EXTRACT DESCRIPTORS done"
                   << "\n";
@@ -181,10 +181,10 @@ int main(int argc, const char *argv[])
             //// TASK MP.6 -> add KNN match selection and perform descriptor distance ratio filtering with t=0.8 in file matching2D.cpp
 
             matchDescriptors(
-                /*kPtsSource*/ (dataBuffer.end() - 2)->keyPoints,
-                /*kPtsRef*/ (dataBuffer.end() - 1)->keyPoints,
-                /*descSource*/ (dataBuffer.end() - 2)->descriptors,
-                /*descRef*/ (dataBuffer.end() - 1)->descriptors,
+                /*kPtsSource*/ dataBuffer[2].keyPoints,
+                /*kPtsRef*/ dataBuffer[1].keyPoints,
+                /*descSource*/ dataBuffer[2].descriptors,
+                /*descRef*/ dataBuffer[1].descriptors,
                 /*matches*/ matches,
                 /*descriptorType*/ descriptorType,
                 /*matcherType*/ matcherType,
@@ -193,7 +193,7 @@ int main(int argc, const char *argv[])
             //// EOF STUDENT ASSIGNMENT
 
             // store matches in current data frame
-            (dataBuffer.end() - 1)->kptMatches = matches;
+            dataBuffer[1].kptMatches = matches;
 
             std::cout << "#4 : MATCH KEYPOINT DESCRIPTORS done"
                       << "\n";
@@ -202,12 +202,12 @@ int main(int argc, const char *argv[])
             bVis = true;
             if (bVis)
             {
-                cv::Mat matchImg = ((dataBuffer.end() - 1)->cameraImg).clone();
+                cv::Mat matchImg = dataBuffer[1].cameraImg.clone();
                 cv::drawMatches(
-                    /*img1*/ (dataBuffer.end() - 2)->cameraImg,
-                    /*keypoints1*/ (dataBuffer.end() - 2)->keyPoints,
-                    /*img2*/ (dataBuffer.end() - 1)->cameraImg,
-                    /*keypoints2*/ (dataBuffer.end() - 1)->keyPoints,
+                    /*img1*/ dataBuffer[2].cameraImg,
+                    /*keypoints1*/ dataBuffer[2].keyPoints,
+                    /*img2*/ dataBuffer[1].cameraImg,
+                    /*keypoints2*/ dataBuffer[1].keyPoints,
                     /*matches1to2*/ matches,
                     /*outImg*/ matchImg,
                     /*matchColor*/ cv::Scalar::all(-1),
