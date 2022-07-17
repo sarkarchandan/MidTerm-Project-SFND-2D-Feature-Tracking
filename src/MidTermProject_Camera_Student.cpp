@@ -174,7 +174,7 @@ int main(int argc, const char *argv[])
             std::vector<cv::DMatch> matches;
             std::string matcherType = "MAT_BF";        // MAT_BF, MAT_FLANN
             std::string descriptorType = "DES_BINARY"; // DES_BINARY, DES_HOG
-            std::string selectorType = "SEL_NN";       // SEL_NN, SEL_KNN
+            std::string selectorType = "SEL_KNN";      // SEL_NN, SEL_KNN
 
             //// STUDENT ASSIGNMENT
             //// TASK MP.5 -> add FLANN matching in file matching2D.cpp
