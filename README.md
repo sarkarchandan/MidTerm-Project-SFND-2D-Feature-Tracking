@@ -1,6 +1,8 @@
 # SFND 2D Feature Tracking - Mid Term Project Report
 
-I have worked on this project mainly on my local machine. I built OpenCV 4.6.0 from source and enabled the `OPENCV_ENABLE_NONFREE` option. However, some combinations of detectors and descriptors resulted in error for me. Hence, I have recorded my observations for the combinations, which worked for me.
+I would like to report on my findings on the performance of following detector and descriptor combinations. Based on that I would like to propose the top 3 detector / descriptors combinations.
+
+I have worked on this project on my local machine with Linux, because it is convenient for me. I built OpenCV 4.6.0 from source with `OPENCV_ENABLE_NONFREE` option enabled. However, some combinations of detectors and descriptors resulted in errors for me. I have recorded those combinations with `NA` in the following spreadsheet along with combinations, which worked. I would like to request the reviewer to kindly advise me, if the following observations are reasonable.
 
 | **Detectors**     | **Descriptors** | **#KeyPoints(avg)** | **Key Point Detection Time(avg)** | **Description Extraction Time(avg)** |
 |---------------|-----------------|-------------|------------|-----------|
@@ -39,3 +41,27 @@ I have worked on this project mainly on my local machine. I built OpenCV 4.6.0 f
 |    SIFT       |      FREAK      |     NA      |     NA     |    NA     |
 |    SIFT       |      AKAZE      |     NA      |     NA     |    NA     |
 |    SIFT       |      SIFT       |    1386     | 133.008 ms | 57.978 ms |
+
+## My analysis and recommendations
+
+First of all, in my implementation I have found, that `ORB` is the algorithm, which reliably works when combined with most of the key point detectors. Overall, I have found `ORB` to be the most efficient descriptor algorithm as well. On the detector side I have found `FAST` to be the most efficient detector. I have found in my experiments, that the `FAST` and `ORB` is the most efficient combinations of algorithms.
+
+Firstly, I would like to list top 3 detectors in terms of efficiency, first one being the most efficient among three.
+1. `FAST` (most efficient in key point detection)
+2. `ORB`
+3. `Shi-Tomassi` (although Harris featured slightly better time, but in terms of number of key points detected, Shi-Tomasi has beaten Harris)
+
+Secondly, the top 3 descriptors.
+1. `ORB` (most efficient in feature description)
+2. `SIFT`
+3. `AKAZE`
+
+Based on this, the top 3 combinations I would like to recommend with my current implementation are the following.
+1. `FAST` & `ORB` (Overall the best combination both in terms of detected key points and time required).
+2. `ORB` & `ORB` 
+3. `FAST` & `SIFT`
+
+Quite surprisingly, when I used `ORB` algorithm both for key points detection and description it did not come up to be as efficient as combining `FAST` and `ORB`, which I found as the overall best combination. For all the combinations, which worked for me I have found mostly true positives along with some false positives. I have not focused on this outcome for my recommendation.
+
+Thank you for reviewing my project. Please advise me, if I have implemented something wrongly and what I could do better to improve the observations, I recorded above.
+
