@@ -26,9 +26,27 @@ The function `matchDescriptors` declared in *matching2D.hpp* and defined in *mat
 The use of k-nearest neighbor based selector has the added complexity of deriving the best match out of k (in our implementation k = 2) computed matches. For that we implement Lowe's distance ratio test. In the `matchDescriptor` function we have defined a pre-agreed distance ratio threshold of 0.8. Since we assumed k = 2 from beginning our iterative implementation is simpler in this regard. We iterate of each pair of best matches for the reference image and check if the first match (which is the best match) is within the defined distance ratio threshold from the second based match and include it in the final set of cv::DMatch objects if it is true.
 
 7. **Combined (MP.7, MP.8, MP.9) - Performance Evaluation 1, 2, 3**
-# TODO: Count the number of key points on the preceding vehicle rect precisely as well and make a separate table.
-# TODO: Copy the code to workspace and work on the missing combinations.
-# TODO: Verify against the rubric before submission.
+
+We start with recording number of detected key points in total and for the preceding vehicle (indicated in the following table as `PV`) using the key point detector algorithms (MP.7), which we have made use of in the implementation. We also record the time for each case.
+
+| **Image/Detector** | **Harris** | **Shi-Tomasi** | **FAST** | **BRISK** | **ORB** | **AKAZE** | **SIFT** |
+|---------|---------|---------|---------|---------|---------|---------|---------|
+|image0|Total: 53, PV: 10, 17.64 ms|---------|---------|---------|---------|---------|---------|
+|image1|Total: 62, PV: 13, 11.23 ms|---------|---------|---------|---------|---------|---------|
+|image2|Total: 63, PV: 17, 11.94 ms|---------|---------|---------|---------|---------|---------|
+|image3|Total: 69, PV: 17, 10.63 ms|---------|---------|---------|---------|---------|---------|
+|image4|Total: 82, PV: 20, 10.80 ms|---------|---------|---------|---------|---------|---------|
+|image5|Total: 73, PV: 18, 9.40 ms|---------|---------|---------|---------|---------|---------|
+|image6|Total: 69, PV: 17, 10.03 ms|---------|---------|---------|---------|---------|---------|
+|image7|Total: 108, PV: 25, 10.12 ms|---------|---------|---------|---------|---------|---------|
+|image8|Total: 81, PV: 20, 9.78 ms|---------|---------|---------|---------|---------|---------|
+|image9|Total: 68, PV: 19, 9.49 ms|---------|---------|---------|---------|---------|---------|
+
+
+
+
+> TODO: Count the number of key points on the preceding vehicle rect precisely as well and make a separate table.
+> TODO: Verify against the rubric before submission.
 
 | **Detectors**     | **Descriptors** | **#Total KeyPoints(avg)** | **Key Point Detection Time(avg)** | **Description Extraction Time(avg)** |
 |---------------|-----------------|-------------|------------|-----------|
