@@ -31,16 +31,16 @@ We start with recording number of detected key points in total and for the prece
 
 | **Image/Detector** | **Harris** | **Shi-Tomasi** | **FAST** | **BRISK** | **ORB** | **AKAZE** | **SIFT** |
 |---------|---------|---------|---------|---------|---------|---------|---------|
-|image0|Total: 53, PV: 10, 17.64 ms|Total: 1370, PV: 127, 17.63 ms|Total: 1824, PV: 149, 1.11 ms|Total: 2757, PV: 254, 61.92 ms|Total: , PV: ,  ms|Total: , PV: ,  ms|Total: , PV: ,  ms|
-|image1|Total: 62, PV: 13, 11.23 ms|Total: 1301, PV: 120, 9.62 ms|Total: 1832, PV: 152, 0.93 ms|Total: 2777, PV: 274, 56.06 ms|---------|---------|---------|
-|image2|Total: 63, PV: 17, 11.94 ms|Total: 1361, PV: 123, 10.81 ms|Total: 1810, PV: 152, 1.02 ms|Total: 2741, PV: 276, 55.20 ms|---------|---------|---------|
-|image3|Total: 69, PV: 17, 10.63 ms|Total: 1358, PV: 120, 9.41 ms|Total: 1817, PV: 157, 0.85 ms|Total: 2735, PV: 275, 55.22 ms|---------|---------|---------|
-|image4|Total: 82, PV: 20, 10.80 ms|Total: 1333, PV: 120, 10.44 ms|Total: 1793, PV: 149, 0.78 ms|Total: 2757, PV: 293, 55.07 ms|---------|---------|---------|
-|image5|Total: 73, PV: 18, 9.40 ms|Total: 1284, PV: 115, 9.71 ms|Total: 1796, PV: 150, 0.72 ms|Total: 2695, PV: 275, 59.27 ms|---------|---------|---------|
-|image6|Total: 69, PV: 17, 10.03 ms|Total: 1322, PV: 114, 10.73 ms|Total: 1788, PV: 157, 0.74 ms|Total: 2715, PV: 289, 63.24 ms|---------|---------|---------|
-|image7|Total: 108, PV: 25, 10.12 ms|Total: 1366, PV: 125, 10.09 ms|Total: 1695, PV: 152, 0.85 ms|Total: 2628, PV: 268, 55.01 ms|---------|---------|---------|
-|image8|Total: 81, PV: 20, 9.78 ms|Total: 1389, PV: 112, 9.40 ms|Total: 1749, PV: 139, 1.07 ms|Total: 2639, PV: 260, 54.17 ms|---------|---------|---------|
-|image9|Total: 68, PV: 19, 9.49 ms|Total: 1339, PV: 113, 9.78 ms|Total: 1770, PV: 144, 0.86 ms|Total: 2672, PV: 250, 59.96 ms|---------|---------|---------|
+|image0|Total: 53, PV: 10, 17.64 ms|Total: 1370, PV: 127, 17.63 ms|Total: 1824, PV: 149, 1.11 ms|Total: 2757, PV: 254, 61.92 ms|Total: 500, PV: 91, 12.96 ms|Total: , PV: ,  ms|Total: , PV: ,  ms|
+|image1|Total: 62, PV: 13, 11.23 ms|Total: 1301, PV: 120, 9.62 ms|Total: 1832, PV: 152, 0.93 ms|Total: 2777, PV: 274, 56.06 ms|Total: 500, PV: 102, 6.31 ms|---------|---------|
+|image2|Total: 63, PV: 17, 11.94 ms|Total: 1361, PV: 123, 10.81 ms|Total: 1810, PV: 152, 1.02 ms|Total: 2741, PV: 276, 55.20 ms|Total: 500, PV: 106, 5.26 ms|---------|---------|
+|image3|Total: 69, PV: 17, 10.63 ms|Total: 1358, PV: 120, 9.41 ms|Total: 1817, PV: 157, 0.85 ms|Total: 2735, PV: 275, 55.22 ms|Total: 500, PV: 113, 5.31 ms|---------|---------|
+|image4|Total: 82, PV: 20, 10.80 ms|Total: 1333, PV: 120, 10.44 ms|Total: 1793, PV: 149, 0.78 ms|Total: 2757, PV: 293, 55.07 ms|Total: 500, PV: 109, 6.05 ms|---------|---------|
+|image5|Total: 73, PV: 18, 9.40 ms|Total: 1284, PV: 115, 9.71 ms|Total: 1796, PV: 150, 0.72 ms|Total: 2695, PV: 275, 59.27 ms|Total: 500, PV: 124, 5.18 ms|---------|---------|
+|image6|Total: 69, PV: 17, 10.03 ms|Total: 1322, PV: 114, 10.73 ms|Total: 1788, PV: 157, 0.74 ms|Total: 2715, PV: 289, 63.24 ms|Total: 500, PV: 129, 4.97 ms|---------|---------|
+|image7|Total: 108, PV: 25, 10.12 ms|Total: 1366, PV: 125, 10.09 ms|Total: 1695, PV: 152, 0.85 ms|Total: 2628, PV: 268, 55.01 ms|Total: 500, PV: 127, 6.15 ms|---------|---------|
+|image8|Total: 81, PV: 20, 9.78 ms|Total: 1389, PV: 112, 9.40 ms|Total: 1749, PV: 139, 1.07 ms|Total: 2639, PV: 260, 54.17 ms|Total: 500, PV: 124, 5.21 ms|---------|---------|
+|image9|Total: 68, PV: 19, 9.49 ms|Total: 1339, PV: 113, 9.78 ms|Total: 1770, PV: 144, 0.86 ms|Total: 2672, PV: 250, 59.96 ms|Total: 500, PV: 125, 5.06 ms|---------|---------|
 
 
 
