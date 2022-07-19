@@ -1,33 +1,41 @@
 # SFND 2D Feature Tracking - Mid Term Project Report
 
-I would like to report on my findings on the performance of following detector and descriptor combinations. Based on that I would like to propose the top 3 detector / descriptors combinations.
+I would like to report on my findings on the performance of the detector and descriptor combinations. Based on that I would like to propose the top 3 detector + descriptors.
 
-I have worked on this project on my local machine with Linux, because it is convenient for me. I built OpenCV 4.6.0 from source with `OPENCV_ENABLE_NONFREE` option enabled. However, some combinations of detectors and descriptors resulted in errors for me. I have recorded those combinations with `NA` in the following spreadsheet along with combinations, which worked. I would like to request the reviewer to kindly advise me, if the following observations are reasonable. With that I would like to address the points mentioned in the evaluation rubric of the mid-term project.
+I have worked on this project on my local machine with Linux, because it is convenient for me. I built OpenCV 4.6.0 from source with `OPENCV_ENABLE_NONFREE` option enabled. However, some combinations of detectors and descriptors resulted in errors for me. In order to double check I copied my implementation in the Udacity workspace and came with the same result as recorded in the spreadsheet in respective sections below.
+
+> I have recorded those combinations, which did not work for me with an `NA` in the second spreadsheet of combined sections 7, 8 and 9 below. I would like to request the reviewer to kindly advise me, if the following observations are reasonable. With that I would like to address the points mentioned in the evaluation rubric of the mid-term project.
 
 1. **MP.1 Data Buffer Optimization**
-As per the requirement of the project, I have implemented a templated class called `RingBuffer` in the *dataStructures.h* header file. This class wraps a vector. Apart from specifying the type, template argument includes an additional parameter called maxLength, which denotes the number of objects would be contained by the buffer in memory. In the implementation I have used the buffer size as 2. When we try to push a new objet to RingBuffer at the rear end and the buffer is already at the maxLength, it removes the object at the front to make room for the new object. As per my understanding, both push at the rear and pop from front can happen in O(1) time. RingBuffer class also overloads the subscript operator, which encapsulates a similar logic accessor logic, that the project had before ring buffer. We do this in order to keep the base implementation simple and focus on exploring the detectors and descriptor algorithms.
+
+As per the requirement of the project, I have implemented a templated class called `RingBuffer` in the *dataStructures.h* header file. This class wraps a vector. Apart from specifying the object type, template includes an additional parameter called maxLength, which denotes the number of objects, that would be contained by the buffer in memory. In the implementation I have used the buffer size as 2. When we try to push a new objet to RingBuffer at the rear end and the buffer is already at the maxLength, it removes the object at the front to make room for the new object. RingBuffer class also overloads the subscript operator, which encapsulates a similar accessor logic, that the project had before implementing ring buffer. We do this in order to keep the base implementation simple and focus on exploring the detectors and descriptor algorithms as main objective.
 
 2. **MP.2 KeyPoint Detection**
-The function `detKeyPointsModern` declared in *matching2D.hpp* and defined in *matching2D_Student.cpp* provides implementation of key point detection using FAST, AKAZE, BRISK, ORB, SIFT algorithms from OpenCV. For Harris corner detection as dedicated function `detKeyPointsHarris` has been implemented and in this implementation we use non maximal suppression taking reference from the practice exercises during lectures. For all algorithms the time required in milliseconds in order to detect key points has been logged. The performance part of this writeup derives the average time over all images from these logged times.
+
+The function `detKeyPointsModern` declared in *matching2D.hpp* and defined in *matching2D_Student.cpp* provides implementation of key point detection using FAST, AKAZE, BRISK, ORB, and SIFT algorithms from OpenCV. For Harris corner detection a dedicated function `detKeyPointsHarris` and for Shi-Tomasi another dedicated function `detKeypointsShiTomasi` have been implemented. For the implementation of Harris detection we use non maximal suppression, taking reference from the practice exercises during lectures. For all algorithms the times required in milliseconds in order to detect key points have been logged. The performance part of this writeup derives the average time over all images from these logged times.
 
 3. **MP.3 KeyPoint Removal**
-In the file *MidTermProject_Camera_Student.cpp*, right after invoking `detKeyPointsModern` function to detect key points a rectangular area was predefined as cv::Rect object, which encapsulates the area covered by the preceding vehicle. In order to filter key points and just focus on the key points on the preceding vehicle we have taken an iterative approach. The cv::Rect object provides us with the coordinate of the top left point of the rectangular area along with the width and height. Using these information, we can infer the upper and lower bounds of both x and y coordinates. Based on these we can then check if a given key point falls inside these upper and lower bounds. We have used this semantic to filter in only those key points, which are inside the said bound in the vector `keyPointOI`. We then updated the DataFrame object for the image with only the key points of interest using this vector instead of all the detected key points.
+
+In the file *MidTermProject_Camera_Student.cpp*, right after invoking `detKeyPointsModern` function to detect key points a rectangular area was predefined as *cv::Rect* object, which encapsulates the area covered by the preceding vehicle. In order to filter key points and just focus on the key points on the preceding vehicle we have taken an iterative approach. The cv::Rect object provides us with the coordinate of the top left point of the rectangular area along with the width and height. Using these information, we can infer the upper and lower bounds of both x and y coordinates. Based on these we can then check if a given key point falls inside these lower and upper bounds. We have used this semantic to filter-in only those key points, which are inside the said bound in the vector `keyPointOI`. We then updated the DataFrame object for a given image with only the key points of interest using this vector instead of all the detected key points.
 
 4. **MP.4 KeyPoint Descriptors**
-The function `descKeyPoints` declared in *matching2D.hpp* and defined in *matching2D_Student.cpp* instantiates the appropriate *DescriptorExtractor* object based on the provided *descriptorType*. Depending on this argument we instantiate one of the BRIEF, ORB, FREAK, AKAZE, and SIFT DescriptorExtractors to create distinctive feature vectors of the surrounding area of given key points. A common approach is taken for key points description extraction i.e., upon instantiating a given kind of *DescriptorExtractor* we use the `compute` method in order to derive the feature vectors as collection in a cv::Mat object. The time required in milliseconds is logged. Like key point detection we derive the average time required in milliseconds for each descriptor algorithm and use that to evaluate the descriptor performance later in this section.
+
+The function `descKeyPoints` declared in *matching2D.hpp* and defined in *matching2D_Student.cpp* instantiates the appropriate *cv::DescriptorExtractor* object based on the provided *descriptorType*. Depending on this argument we instantiate one of the BRIEF, ORB, FREAK, AKAZE, and SIFT DescriptorExtractors to create distinctive feature vectors of the surrounding area of given key points. A common approach is taken for key points description extraction i.e., upon instantiating a given kind of *DescriptorExtractor* we use the `compute` method in order to derive the feature vectors as collection in a *cv::Mat* object. The time required in milliseconds is logged. Like key point detection we derive the average time required in milliseconds for each descriptor algorithm and use that to evaluate the descriptor performance combined with detectors later in the performance section.
 
 5. **MP.5 Descriptor Matching**
-The function `matchDescriptors` declared in *matching2D.hpp* and defined in *matching2D_Student.cpp* implements the logic for matching a given set of key point from an image captured in previous time step (source) and an image captured in current time step (reference). This convention is also referred as query image and train image in OpenCV literature. This function, however does not take the actual images, rather the key points and respective descriptors from the source image and reference image. Additionally it takes a *descriptorType*, *matcherType*, and *selectorType*.
-    - Depending on *descriptorType* denoting a binary descriptor or gradient based one, we decide on whether to use L2_NORM or Hamming Distance to measure the distance between the feature vectors. By incorporating the XOR operation Hamming Distance can be very efficient for computing the distance for binary feature vectors, compared to L2_NORM for gradient based feature vectors.
-    - Depending on *matcherType* denoting a brute-force or FLANN(using efficient kdtree approach) based matching preference we instantiate either cv::BFMatcher or FLANN-based DescriptorMatcher object.
-    - Depending on *selectorType* denoting either a nearest neighbor or k-nearest neighbor matching algorithm, we either use `match` or `knnMatch` method of the DescriptorMater. The k-nearest neighbor approach incorporates some additional processing because we derive 2 best matches in a reference image for a given feature descriptor in the source image. We also needed to use a separate buffer for keeping the collection of cv::DMatch objects for this approach.
+
+The function `matchDescriptors` declared in *matching2D.hpp* and defined in *matching2D_Student.cpp* implements the logic for matching a given set of key points from an image captured in previous time step (source) and an image captured in current time step (reference). This convention is also referred as query image and train image in OpenCV literature. This function, however does not take the actual images, rather the key points and respective descriptors from the source image and reference image. Additionally it takes a *descriptorType*, *matcherType*, and *selectorType*.
+    - Depending on **descriptorType** denoting a binary descriptor or gradient based one, we decide on whether to use L2_NORM or Hamming Distance to measure the distance between the feature vectors. By incorporating the XOR operation Hamming Distance can be very efficient for computing the distance for binary feature vectors, as opposed to L2_NORM for gradient based feature vectors.
+    - Depending on **matcherType** denoting a brute-force or FLANN(using efficient kdtree approach) based matching preference, we instantiate either *cv::BFMatcher* or FLANN-based *cv::DescriptorMatcher* object.
+    - Depending on **selectorType** denoting either a nearest neighbor or k-nearest neighbor matching algorithm, we either use `match` or `knnMatch` method of the *cv::DescriptorMatcher* object. The k-nearest neighbor approach incorporates some additional processing because we derive 2 best matches in a reference image for a given feature descriptor in the source image. We also needed to use a separate buffer for keeping the collection of *cv::DMatch* objects for this approach.
 
 6. **MP.6 Descriptor Distance Ratio**
-The use of k-nearest neighbor based selector has the added complexity of deriving the best match out of k (in our implementation k = 2) computed matches. For that we implement Lowe's distance ratio test. In the `matchDescriptor` function we have defined a pre-agreed distance ratio threshold of 0.8. Since we assumed k = 2 from beginning our iterative implementation is simpler in this regard. We iterate of each pair of best matches for the reference image and check if the first match (which is the best match) is within the defined distance ratio threshold from the second based match and include it in the final set of cv::DMatch objects if it is true.
+
+The use of k-nearest neighbor based selector has the added complexity of deriving the best match out of k (in our implementation k = 2) computed matches. For that we implement Lowe's distance ratio test. In the `matchDescriptor` function we have defined a pre-agreed distance ratio threshold of `0.8`. Since we assumed k = 2 from beginning our iterative implementation is simpler in this regard. We iterate over each pair of best matches for the reference image and check if the first match (which is the best match) is within the defined distance ratio threshold from the second based match and include it in the final set of *cv::DMatch* objects if it is true.
 
 7. **Combined (MP.7, MP.8, MP.9) - Performance Evaluation 1, 2, 3**
 
-We start with recording number of detected key points in total and for the preceding vehicle (indicated in the following table as `PV`) using the key point detector algorithms (MP.7), which we have made use of in the implementation. We also record the time for each case.
+We start by counting the number of detected key points (MP.7). In the following table we have recorded three pieces of information, total number of detected key points, time consumed to detect the key points and the number of key points detected specifically for the rectangular area denoting the preceding vehicle, for each image. This last information is captured by the `PV` keyword in the following table.
 
 | **Image/Detector** | **Harris** | **Shi-Tomasi** | **FAST** | **BRISK** | **ORB** | **AKAZE** | **SIFT** |
 |---------|---------|---------|---------|---------|---------|---------|---------|
@@ -42,11 +50,9 @@ We start with recording number of detected key points in total and for the prece
 |image8|Total: 81, PV: 20, 9.78 ms|Total: 1389, PV: 112, 9.40 ms|Total: 1749, PV: 139, 1.07 ms|Total: 2639, PV: 260, 54.17 ms|Total: 500, PV: 124, 5.21 ms|Total: 1358, PV: 175, 50.97 ms|Total: 1463, PV: 156, 55.49 ms|
 |image9|Total: 68, PV: 19, 9.49 ms|Total: 1339, PV: 113, 9.78 ms|Total: 1770, PV: 144, 0.86 ms|Total: 2672, PV: 250, 59.96 ms|Total: 500, PV: 125, 5.06 ms|Total: 1331, PV: 175, 46.31 ms|Total: 1422, PV: 135, 55.91 ms|
 
+From the above table we can infer some initial ideas about the performance for each algorithm. Harris detector being a legacy implementation can be kept aside since it has detected the lowest number of key points (keeping in mind that, we specifically incorporated non-maximal suppression for the same). It means, that the number of true positive detection should be proportionally less. Shi-Tomasi detector algorithm has performed far better than Harris, both in terms of number of detected key points as well as time efficiency. When it comes to contemporary detection algorithms, we can clearly see `FAST` being a clear winner in terms of efficiency and number of detected key points. It is followed by `ORB`, and `BRISK` being at the third position. Shi-Tomasi algorithm featured better time efficiency compared to BRISK, however BRISK detected more key points, which means proportionally more true positives.
 
-
-
-> TODO: Count the number of key points on the preceding vehicle rect precisely as well and make a separate table.
-> TODO: Verify against the rubric before submission.
+Now we'd deal with MP.8 and MP.9 together with the following spreadsheet, where we have tried all combinations of detectors and descriptors to match key points on the preceding vehicle. In order to keep this table concise, we have averaged the number of total detected key points, time required to detect all key points, and finally, time required for extracting distinctive feature vectors, over all the images.
 
 | **Detectors**     | **Descriptors** | **#Total KeyPoints(avg)** | **Key Point Detection Time(avg)** | **Description Extraction Time(avg)** |
 |---------------|-----------------|-------------|------------|-----------|
@@ -86,26 +92,25 @@ We start with recording number of detected key points in total and for the prece
 |    SIFT       |      AKAZE      |     NA      |     NA     |    NA     |
 |    SIFT       |      SIFT       |    1386     | 133.008 ms | 57.978 ms |
 
-## My analysis and recommendations
+First of all, in my experiments I have found, that `ORB` is the most versatile descriptor algorithm, which reliably works when combined with most of the key point detectors. Overall, I have found `ORB` to be the most efficient descriptor algorithm as well. On the detector side as previously stated, I have found `FAST` to be the most efficient one. The results above suggests, that the `FAST` and `ORB` is the most efficient combinations of algorithms.
 
-First of all, in my implementation I have found, that `ORB` is the algorithm, which reliably works when combined with most of the key point detectors. Overall, I have found `ORB` to be the most efficient descriptor algorithm as well. On the detector side I have found `FAST` to be the most efficient detector. I have found in my experiments, that the `FAST` and `ORB` is the most efficient combinations of algorithms.
-
-Firstly, I would like to list top 3 detectors in terms of efficiency, first one being the most efficient among three.
-1. `FAST` (most efficient in key point detection)
+Firstly, I would like to list top 3 detectors in terms of time efficiency and performance once again at a glance, first one being the most efficient among three.
+1. `FAST` (most efficient in key point detection and time efficiency)
 2. `ORB`
-3. `Shi-Tomassi` (although Harris featured slightly better time, but in terms of number of key points detected, Shi-Tomasi has beaten Harris)
+3. `BRISK` (although Shi-Tomassi featured slightly better time, but in terms of number of key points detected, BRISK is more reliable)
 
-Secondly, the top 3 descriptors.
-1. `ORB` (most efficient in feature description)
+Secondly, top 3 descriptors at a glance.
+1. `ORB` (most efficient in feature description and time efficiency)
 2. `SIFT`
 3. `AKAZE`
 
-Based on this, the top 3 combinations I would like to recommend with my current implementation are the following.
-1. `FAST` & `ORB` (Overall the best combination both in terms of detected key points and time required).
+My recommendations for top 3 combinations of detector and descriptor algorithms looks at overall performance specifically in the second spreadsheet above, where they are combined. The parameters are number of key points detected and time efficiency.
+1. `FAST` & `ORB` (Overall the best combination both in terms of detected key points and time efficiency).
 2. `ORB` & `ORB` 
 3. `FAST` & `SIFT`
 
-Quite surprisingly, when I used `ORB` algorithm both for key points detection and description it did not come up to be as efficient as combining `FAST` and `ORB`, which I found as the overall best combination. For all the combinations, which worked for me I have found mostly true positives along with some false positives. I have not focused on this outcome for my recommendation.
+Quite surprisingly, when I used `ORB` algorithm both for key points detection and description it did not come up to be as time-efficient as combining `FAST` and `ORB`, which I found as the overall best combination. For all the combinations, which worked for me, I have found mostly true positives along with some false positives on the preceding vehicle. I have not specifically focused on this aspect for my evaluation.
 
 Thank you for reviewing my project. Please advise me, if I have implemented something wrongly and what I could do better to improve the observations, I recorded above.
+
 
